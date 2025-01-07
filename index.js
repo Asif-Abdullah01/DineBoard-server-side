@@ -22,6 +22,29 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+
+    const db = client.db('dine-db')
+    const foodsCollection = db.collection('foods');
+
+    //add a single food item
+
+    app.post('/add-food',async(req,res)=> {
+        const foodData = req.body;
+        const result = await foodsCollection.insertOne(foodData)
+       
+        res.send(result)
+    })
+
+
+    //get all foods data
+    app.get('/foods',async(req,res)=> {
+      const result = await foodsCollection.find().toArray();
+      res.send(result);
+    })
+
+
+
+
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     // Send a ping to confirm a successful connection
