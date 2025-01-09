@@ -45,9 +45,19 @@ async function run() {
     })
 
 
-    //get all foods data
+    //get foods data for home
     app.get('/foods', async (req, res) => {
       const result = await foodsCollection.find().toArray();
+      res.send(result);
+    })
+
+    //get all foods for all foods route
+    app.get('/all-foods', async (req, res) => {
+      const search = req.query.search
+      let query = {
+        name: { $regex: search, $options: 'i' },
+      }
+      const result = await foodsCollection.find(query).toArray();
       res.send(result);
     })
 
@@ -87,6 +97,34 @@ async function run() {
         const result = await ordersCollection.find(query).toArray()
         res.send(result)
       })
+
+   // delete a food from my orders
+    app.delete('/my-food/:id', async (req, res) => {
+      const id = req.params.id
+      // console.log(id);
+      const query = { _id: new ObjectId(id) }
+      const result = await ordersCollection.deleteOne(query);
+      // console.log(result);
+      res.send(result)
+    })
+
+
+    //update a job in db
+    app.put('/foods/:id', async (req, res) => {
+      const id = req.params.id
+      const foodData = req.body
+      const query = { _id: new ObjectId(id) }
+      const options = { upsert: true }
+
+      const updatedDoc = {
+        $set: {
+          ...foodData,
+        },
+      }
+
+      const result = await foodsCollection.updateOne(query,updatedDoc,options)
+      res.send(result);
+    })
   
 
 
