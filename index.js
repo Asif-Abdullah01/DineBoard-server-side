@@ -39,15 +39,25 @@ async function run() {
     //add a single order to orders
     app.post('/add-order', async (req, res) => {
       const orderedData = req.body;
-
       const result = await ordersCollection.insertOne(orderedData)
+
+      const filter = {_id: new ObjectId(orderedData.foodId)}
+      const update = {
+        $inc: {order:1},
+      }
+      const updatedOrderCount = await foodsCollection.updateOne(filter,update)
+
       res.send(orderedData)
     })
 
 
     //get foods data for home
     app.get('/foods', async (req, res) => {
-      const result = await foodsCollection.find().toArray();
+      const result = await foodsCollection
+      .find()
+      .sort({order: -1})
+      .limit(6)
+      .toArray();
       res.send(result);
     })
 
