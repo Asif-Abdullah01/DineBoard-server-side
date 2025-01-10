@@ -10,7 +10,9 @@ const port = process.env.PORT || 5000;
 const corsOptions = {
   origin: [
     'http://localhost:5173',
-    'https://cheerful-eclair-b22c9e.netlify.app'
+    'https://phero-assignment.web.app',
+    'https://phero-assignment.firebaseapp.com',
+    'https://boisterous-mandazi-65c75a.netlify.app'
   ],
   credentials: true,
   optionalSuccessStatus: 200,
